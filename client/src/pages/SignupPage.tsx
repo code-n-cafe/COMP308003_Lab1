@@ -46,7 +46,10 @@ const SignupPage: React.FC = () => {
   };
 
   return (
-    <div style={{ padding: "2rem", maxWidth: 640, margin: "auto" }}>
+    <div style={{ 
+      padding: "2rem", 
+      maxWidth: 400, 
+      margin: "auto" }}>
       <h1>Sign Up</h1>
       <form onSubmit={handleSubmit} style={{ display: "grid", gap: 10 }}>
         <input type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} required />

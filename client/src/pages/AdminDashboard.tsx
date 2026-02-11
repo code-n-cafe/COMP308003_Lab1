@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import StudentFormModal from "../components/StudentFormModal";
+import CourseFormModal from "../components/CourseFormModal";
 import { useAuth } from "../context/AuthContext";
 import CourseCard from "../components/CourseCard";
 import StudentCard from "../components/StudentCard";
@@ -22,6 +24,8 @@ const AdminDashboard: React.FC = () => {
     favoriteTopic: "",
     strongestSkill: ""
   });
+  const [showStudentModal, setShowStudentModal] = useState(false);
+  const [showCourseModal, setShowCourseModal] = useState(false);
 
   const getHeaders = () => {
     const token = user?.token ?? (() => {
@@ -110,34 +114,31 @@ const AdminDashboard: React.FC = () => {
     } catch (err) { console.error(err); alert("Add student failed"); }
   }
 
+  const handleStudentCreated = async (student: any) => {
+    // refresh list after a new student is created
+    await loadStudents();
+  };
+
+  const handleCourseCreated = async (course: any) => {
+    // refresh list after a new course is created
+    await loadCourses();
+  }
+
   return (
     <div style={{ padding: 24 }}>
       <h1>Admin Dashboard</h1>
 
       <section style={{ marginTop: 16 }}>
-        <h2>Add Student</h2>
-        <form onSubmit={handleAddStudent} style={{ display: "grid", gap: 8, maxWidth: 800 }}>
-          <div style={{ display: "flex", gap: 8 }}>
-            <input placeholder="Student Number" value={form.studentNumber} onChange={e => setForm({ ...form, studentNumber: e.target.value })} required />
-            <input placeholder="Email" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} required />
-            <input placeholder="Password" value={form.password} onChange={e => setForm({ ...form, password: e.target.value })} required />
-          </div>
-          <div style={{ display: "flex", gap: 8 }}>
-            <input placeholder="First Name" value={form.firstName} onChange={e => setForm({ ...form, firstName: e.target.value })} required />
-            <input placeholder="Last Name" value={form.lastName} onChange={e => setForm({ ...form, lastName: e.target.value })} required />
-            <input placeholder="Phone" value={form.phoneNumber} onChange={e => setForm({ ...form, phoneNumber: e.target.value })} />
-          </div>
-          <div style={{ display: "flex", gap: 8 }}>
-            <input placeholder="Address" value={form.address} onChange={e => setForm({ ...form, address: e.target.value })} />
-            <input placeholder="City" value={form.city} onChange={e => setForm({ ...form, city: e.target.value })} />
-            <input placeholder="Program" value={form.program} onChange={e => setForm({ ...form, program: e.target.value })} />
-          </div>
-          <div style={{ display: "flex", gap: 8 }}>
-            <input placeholder="Favorite Topic" value={form.favoriteTopic} onChange={e => setForm({ ...form, favoriteTopic: e.target.value })} />
-            <input placeholder="Strongest Skill" value={form.strongestSkill} onChange={e => setForm({ ...form, strongestSkill: e.target.value })} />
-            <button type="submit">Add Student</button>
-          </div>
-        </form>
+        <h2 style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          <button title="Add student" onClick={() => setShowStudentModal(true)} style={{
+             borderRadius: 18, fontSize: 20, lineHeight: "20px", alignContent: "center", justifyContent: "center",
+          }}>Add Student +</button>
+          <button title="Add course" onClick={() => setShowCourseModal(true)} style={{
+             borderRadius: 18, fontSize: 20, lineHeight: "20px", alignContent: "center", justifyContent: "center",
+          }}>Add Course +</button>
+        </h2>
+        {/* existing inline add-student form can remain or be removed; modal is primary now */}
+        {/* ...existing inline form ... */}
       </section>
 
       <section style={{ marginTop: 24 }}>
@@ -159,6 +160,10 @@ const AdminDashboard: React.FC = () => {
           </div>
         )}
       </section>
+
+      {/* Student modal */}
+      <StudentFormModal isOpen={showStudentModal} onClose={() => setShowStudentModal(false)} onCreated={handleStudentCreated} />
+      <CourseFormModal isOpen={showCourseModal} onClose={() => setShowCourseModal(false)} onCreated={handleCourseCreated} />
     </div>
   );
 };

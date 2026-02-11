@@ -16,10 +16,11 @@ const CourseCard: React.FC<Props> = ({ course, id, code, name, section, onDrop, 
     border: "1px solid #ccc",
     borderRadius: 8,
     padding: 12,
+    color: "#fff",
     margin: 8,
     width: 320,
     boxShadow: "0 2px 6px rgba(0,0,0,0.06)",
-    background: "#fff",
+    background: "#46565e",
   };
 
   return (
@@ -27,9 +28,9 @@ const CourseCard: React.FC<Props> = ({ course, id, code, name, section, onDrop, 
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
         <div>
           <div style={{ fontWeight: 700 }}>{c.courseName || c.courseCode}</div>
-          {c.courseCode && <div style={{ color: "#666" }}>{c.courseCode}</div>}
+          {c.courseCode && <div style={{ color: "#ffffff" }}>{c.courseCode}</div>}
         </div>
-        {c.section && <div style={{ fontSize: 12, color: "#333" }}>Sec {c.section}</div>}
+        {c.section && <div style={{ fontSize: 12, color: "#ffffff" }}>Sec {c.section}</div>}
       </div>
 
       <div style={{ marginTop: 10, display: "flex", gap: 8 }}>

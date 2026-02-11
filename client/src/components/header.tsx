@@ -2,17 +2,25 @@ import React from "react";
 
 function Header() {
     const headerStyle: React.CSSProperties = {
-        backgroundColor: "#282c34",
-        padding: "20px",
+        position: "fixed",
+        top: 0,
+        left: 0,
+        width: "100%",
+        boxSizing: "border-box",       // ensure padding doesn't shift centering
+        padding: "30px",          // symmetric horizontal padding
+        backgroundColor: "#123884",
         color: "white",
-        textAlign: "center",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        zIndex: 1000,
     };
 
     return (
         <header style={headerStyle}>
-        <h1>MyClasses</h1>
+          <h1 style={{ margin: 0 }}>MyClasses</h1>
         </header>
     );
-    }
+}
 
 export default Header;
