@@ -1,7 +1,10 @@
 import express from "express";
-import { studentRouter } from "./route/student.routes";
-import { adminRouter } from "./route/admin.routes";
-import { authRouter } from "./route/auth.route";
+import { studentRouter } from "./route/student.routes.js";
+import { adminRouter } from "./route/admin.routes.js";
+import { authRouter } from "./route/auth.route.js";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const app = express();
 
