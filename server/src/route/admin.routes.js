@@ -22,7 +22,7 @@ export const adminRouter = () => {
         body('courseName').notEmpty().withMessage('Course name is required')
     ], adminController.createCourse);
     router.get("/students", adminController.listStudents);
-    router.get("/students/:courseCode/students", adminController.listStudentsByCourse);
+    router.get("/courses/:courseCode/students", adminController.listStudentsByCourse);
     router.get("/courses", adminController.listCourses);
 
     return router;
