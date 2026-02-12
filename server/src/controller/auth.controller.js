@@ -4,6 +4,14 @@ import Student from "../model/Student.js";
 export const login = async (req, res) => {
   const { username, studentNumber, password } = req.body;
 
+  // Guardrails: make config issues obvious
+  if (!process.env.JWT_SECRET) {
+    return res.status(500).json({
+      success: false,
+      error: "JWT_SECRET is not configured on the server"
+    });
+  }
+
   // hardcoded admin login
   if (username === "admin" && password === "123456") {
     const token = jwt.sign(
@@ -11,7 +19,7 @@ export const login = async (req, res) => {
       process.env.JWT_SECRET,
       { expiresIn: "1h" }
     );
-    return res.json({ success: true, token });
+    return res.json({ success: true, token, user: { id: "admin", role: "admin" } });
   }
 
   // Student login
@@ -27,5 +35,9 @@ export const login = async (req, res) => {
     { expiresIn: "1h" }
   );
 
-  return res.json({ success: true, token });
+  return res.json({
+    success: true,
+    token,
+    user: { id: student._id.toString(), role: "student", studentNumber: student.studentNumber }
+  });
 };

@@ -1,19 +1,21 @@
-import Course from '../model/Course';
-import Student from '../model/Student';
+import Course from '../model/Course.js';
+import Student from '../model/Student.js';
+import Enrollment from "../model/Enrollment.js";
 
 // Add a course
 const addCourse = async (req, res) => {
     try {
         const courseCode = req.params.courseCode;
-        const studentNumber = req.user.studentNumber;
+        const studentId = req.user.sub;
         const course = await Course.findOne({ courseCode });
+        const section = req.body.section;
         if (!course) {
             return res.status(404).json({
                 success: false,
                 error: "Course not found"
             });
         }
-        const student = await Student.findOne({ studentNumber });
+        const student = await Student.findById(studentId);
         if (!student) {
             return res.status(404).json({
                 success: false,
@@ -23,10 +25,17 @@ const addCourse = async (req, res) => {
 
         // If both data exist, add the student to the course's students array
         const result = await course.updateOne(
-            { $addToSet: { students: student._id } }
+            { $addToSet: { students: studentId } }
         );
 
+        // Create enrollment
+        const enrollment = await Enrollment.findOneAndUpdate(
+            { student: studentId, course: course._id },
+            { $setOnInsert: { section: section ?? "001" } },
+            { new: true, upsert: true, runValidators: true }
         
+        );
+
         if (result.modifiedCount === 0) {
             return res.status(200).json({
                 success: true,
@@ -35,7 +44,8 @@ const addCourse = async (req, res) => {
         }
         res.status(200).json({
             success: true,
-            message: "Course added."
+            message: "Course added.",
+            data: enrollment
         });
     } catch (e) {
         errorHandler(res, e, "Failed to add course");
@@ -54,7 +64,7 @@ const listCourseByStudent = async (req, res) => {
             });
         }
 
-        const courses = await Course.find({ students: req.user.sub });
+        const courses = await Course.find({ students: student._id });
         res.status(200).json({
             success: true,
             data: courses
@@ -65,21 +75,50 @@ const listCourseByStudent = async (req, res) => {
 };
 
 // Update a course
+
 const updateCourse = async (req, res) => {
-    try {
-        const courseCode = req.params.courseCode;
-        const data = req.body;
-        const updatedCourse = await Course.findOneAndUpdate({ courseCode }, data, { new: true });
-        // In case the course code is not found, return a 404 error
-        if (!updatedCourse) return res.status(404).json({ success:false, error:"Course not found" });
-        res.status(200).json({
-            success: true,
-            data: updatedCourse,
-            message: "Course updated."
-        });
-    } catch (e) {
-        errorHandler(res, e, "Failed to update course");
+  try {
+    const courseCode = req.params.courseCode;
+    const section = req.body;
+
+    if (!section) {
+      return res.status(400).json({ success: false, error: "section is required" });
     }
+
+    // assuming your auth middleware sets req.user with { sub, role }
+    const studentId = req.user?.sub;
+    if (!studentId) {
+      return res.status(401).json({ success: false, error: "Unauthorized" });
+    }
+    const students = await Student.findById(studentId);
+    if (!students) {
+      return res.status(404).json({ success: false, error: "Student not found" });
+    }
+    const course = await Course.findOne({ courseCode });
+    if (!course) {
+      return res.status(404).json({ success: false, error: "Course not found" });
+    }
+
+    const enrollment = await Enrollment.findOneAndUpdate(
+      { student: students._id, course: course._id },
+      { section },
+      { new: true, upsert: false, runValidators: true }
+    );
+
+    if (!enrollment) {
+      // student is not enrolled yet (or you require enrollment to exist first)
+      return res.status(404).json({ success: false, error: "Enrollment not found for this course" });
+    }
+
+    return res.status(200).json({
+      success: true,
+      data: enrollment,
+      message: "Enrollment updated."
+    });
+  } catch (e) {
+    console.error(e);
+    return res.status(500).json({ success: false, error: "Failed to update enrollment" });
+  }
 };
 
 // Drop a course as a student
@@ -103,7 +142,9 @@ const dropCourse = async (req, res) => {
         }
 
         // If both data exist, remove the student from the course's students array
-        const result = await course.updateOne({ $pull: { students: req.user.sub } });
+        const result = await course.updateOne({ $pull: { students: student._id } });
+        await Enrollment.deleteOne({ student: student._id, course: course._id });
+
         if (result.modifiedCount === 0) {
             return res.status(200).json({
                 success: true,
