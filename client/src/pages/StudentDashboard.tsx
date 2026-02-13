@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
+import SignOutFooter from "../components/SignOutFooter";
 import CourseCard from "../components/CourseCard";
 
 type Course = {
@@ -163,6 +164,9 @@ const StudentDashboard: React.FC = () => {
             ))}
           </div>
         )}
+      </section>
+      <section>
+        <SignOutFooter />
       </section>
     </div>
   );

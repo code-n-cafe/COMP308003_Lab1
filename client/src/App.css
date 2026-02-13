@@ -3,7 +3,7 @@
   max-width: 1420px;
   margin: 0 auto;
   text-align: center;
-  padding-top: 72px; /* space for fixed header (matches header height + small gap) */
+  padding-top: 0px; 
 }
 
 .logo {

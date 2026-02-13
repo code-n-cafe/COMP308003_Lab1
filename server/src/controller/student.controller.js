@@ -1,5 +1,5 @@
-import Course from '../model/Course';
-import Student from '../model/Student';
+import Course from '../model/Course.js';
+import Student from '../model/Student.js';
 
 // Add a course
 const addCourse = async (req, res) => {

@@ -1,0 +1,3 @@
+MONGO_URI='mongodb://localhost:27017/test'
+JWT_SECRET='abc12345678'
+PORT=3000

@@ -2,6 +2,7 @@ import express from "express";
 import { body } from "express-validator";
 import { validationResult } from "express-validator";
 import { login } from "../controller/auth.controller.js";
+import { signup } from "../controller/auth.controller.js"
 
 export const authRouter = () => {
   const router = express.Router();
@@ -27,6 +28,10 @@ export const authRouter = () => {
     },
     login
   );
+
+  router.post(
+    "/signup", signup);
+
 
   return router;
 };

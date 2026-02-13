@@ -4,6 +4,8 @@ import CourseFormModal from "../components/CourseFormModal";
 import { useAuth } from "../context/AuthContext";
 import CourseCard from "../components/CourseCard";
 import StudentCard from "../components/StudentCard";
+import SignOutFooter from "../components/SignOutFooter";
+
 
 const AdminDashboard: React.FC = () => {
   const { user } = useAuth();
@@ -159,6 +161,9 @@ const AdminDashboard: React.FC = () => {
             {students.map(s => <StudentCard key={s._id || s.studentNumber || s.email} student={s} />)}
           </div>
         )}
+      </section>
+      <section>
+        <SignOutFooter />
       </section>
 
       {/* Student modal */}

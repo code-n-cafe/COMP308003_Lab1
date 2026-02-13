@@ -65,4 +65,4 @@ StudentSchema.set('toObject', {
   }
 });
 
-module.exports = mongoose.model('Student', StudentSchema);
+export default mongoose.model('Student', StudentSchema);
