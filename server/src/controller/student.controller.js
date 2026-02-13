@@ -64,7 +64,8 @@ const listCourseByStudent = async (req, res) => {
             });
         }
 
-        const courses = await Course.find({ students: student._id });
+        const courses = await Enrollment.find({ student: student._id })
+        .populate("course", "courseCode courseName");
         res.status(200).json({
             success: true,
             data: courses
@@ -79,8 +80,8 @@ const listCourseByStudent = async (req, res) => {
 const updateCourse = async (req, res) => {
   try {
     const courseCode = req.params.courseCode;
-    const section = req.body;
-
+    const { section } = req.body;
+    console.log("PUT body:", req.body);
     if (!section) {
       return res.status(400).json({ success: false, error: "section is required" });
     }
@@ -101,10 +102,10 @@ const updateCourse = async (req, res) => {
 
     const enrollment = await Enrollment.findOneAndUpdate(
       { student: students._id, course: course._id },
-      { section },
-      { new: true, upsert: false, runValidators: true }
+      { $set: { section } },
+      { new: true, runValidators: true }
     );
-
+    console.log("updated enrollment:", enrollment);
     if (!enrollment) {
       // student is not enrolled yet (or you require enrollment to exist first)
       return res.status(404).json({ success: false, error: "Enrollment not found for this course" });

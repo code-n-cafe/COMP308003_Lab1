@@ -26,6 +26,7 @@ body {
   margin: 0;
   display: flex;
   place-items: center;
+  justify-content: center;
   min-width: 320px;
   min-height: 100vh;
 }
@@ -65,4 +66,12 @@ button:focus-visible {
   button {
     background-color: #f9f9f9;
   }
+}
+
+.construction-box {
+  font-family: monospace;
+  text-align: center;
+  font-size: 16px;
+  display: flex;
+  justify-content: center;
 }
